@@ -87,7 +87,7 @@ Then restart Claude Code and type `/buddy`. That's it.
 <br>
 <sub>💡 Want a global `claude-buddy` command? → `bun link`</sub>
 <br>
-<sub>💡 Need help? → `/buddy help` in Claude Code · `bun run help` or `claude-buddy help` (if linked) in terminal</sub>
+<sub>💡 Need help? → `bun run help` or `claude-buddy help` (if linked) in terminal · `/buddy help` in Claude Code</sub>
 
 <br>
 
