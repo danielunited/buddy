@@ -9,6 +9,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { join, resolve, dirname } from "path";
 
 import {
   generateBones,
@@ -39,6 +40,8 @@ import {
   saveCompanionSlot,
   deleteCompanionSlot,
   listCompanionSlots,
+  setBuddyStatusLine,
+  unsetBuddyStatusLine,
 } from "./state.ts";
 import {
   getReaction, generatePersonalityPrompt,
@@ -451,30 +454,9 @@ server.tool(
     saveConfig({ statusLineEnabled: enabled });
 
     if (enabled) {
-      // Immediately patch settings.json so the user doesn't need to restart twice
-      try {
-        const { readFileSync, writeFileSync, renameSync } = await import("fs");
-        const { join, resolve, dirname } = await import("path");
-        const { homedir } = await import("os");
-
-        const settingsPath = join(homedir(), ".claude", "settings.json");
-        const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
-        const pluginRoot = resolve(dirname(import.meta.dir));
-        const statusScript = join(pluginRoot, "statusline", "buddy-status.sh");
-
-        settings.statusLine = {
-          type: "command",
-          command: statusScript,
-          padding: 1,
-          refreshInterval: 1,
-        };
-        const tmp = settingsPath + ".tmp";
-        writeFileSync(tmp, JSON.stringify(settings, null, 2) + "\n");
-        renameSync(tmp, settingsPath);
-      } catch {
-        /* user must restart Claude Code once for the status line to appear */
-      }
-
+      const pluginRoot = resolve(dirname(import.meta.dir));
+      const statusScript = join(pluginRoot, "statusline", "buddy-status.sh");
+      setBuddyStatusLine(statusScript);
       return {
         content: [
           {
@@ -484,24 +466,7 @@ server.tool(
         ],
       };
     } else {
-      // Remove buddy status line from settings.json
-      try {
-        const { readFileSync, writeFileSync, renameSync } = await import("fs");
-        const { join } = await import("path");
-        const { homedir } = await import("os");
-
-        const settingsPath = join(homedir(), ".claude", "settings.json");
-        const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
-        if (settings.statusLine?.command?.includes("buddy-status.sh")) {
-          delete settings.statusLine;
-          const tmp = settingsPath + ".tmp";
-          writeFileSync(tmp, JSON.stringify(settings, null, 2) + "\n");
-          renameSync(tmp, settingsPath);
-        }
-      } catch {
-        /* best effort */
-      }
-
+      unsetBuddyStatusLine();
       return {
         content: [
           {

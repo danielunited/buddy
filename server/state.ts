@@ -354,3 +354,53 @@ export function writeStatusState(
   };
   writeFileSync(join(STATE_DIR, "status.json"), JSON.stringify(state));
 }
+
+// ─── Claude Code settings.json patching (for buddy_statusline tool) ──────────
+
+export const CLAUDE_SETTINGS_PATH = join(homedir(), ".claude", "settings.json");
+
+/**
+ * Write settings.statusLine pointing to the given buddy-status script.
+ * Atomic via tmp + rename. Returns false if settings.json is unreachable.
+ */
+export function setBuddyStatusLine(
+  statusScript: string,
+  settingsPath: string = CLAUDE_SETTINGS_PATH,
+): boolean {
+  try {
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
+    settings.statusLine = {
+      type: "command",
+      command: statusScript,
+      padding: 1,
+      refreshInterval: 1,
+    };
+    const tmp = settingsPath + ".tmp";
+    writeFileSync(tmp, JSON.stringify(settings, null, 2) + "\n");
+    renameSync(tmp, settingsPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Remove settings.statusLine — but only if it points to buddy-status.sh.
+ * Leaves foreign statusLines untouched. Returns false if no buddy line was
+ * present or settings.json is unreachable.
+ */
+export function unsetBuddyStatusLine(
+  settingsPath: string = CLAUDE_SETTINGS_PATH,
+): boolean {
+  try {
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
+    if (!settings.statusLine?.command?.includes("buddy-status.sh")) return false;
+    delete settings.statusLine;
+    const tmp = settingsPath + ".tmp";
+    writeFileSync(tmp, JSON.stringify(settings, null, 2) + "\n");
+    renameSync(tmp, settingsPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
