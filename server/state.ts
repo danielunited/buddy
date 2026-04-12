@@ -252,11 +252,9 @@ export interface ReactionState {
 
 export function loadReaction(): ReactionState | null {
   try {
-    const data: ReactionState = JSON.parse(
-      readFileSync(reactionFile(), "utf8"),
-    );
-    // Reactions expire after 20 seconds (matches shell display TTL)
-    if (Date.now() - data.timestamp > 20_000) return null;
+    const data: ReactionState = JSON.parse(readFileSync(reactionFile(), "utf8"));
+    const { reactionTTL } = loadConfig();
+    if (reactionTTL > 0 && Date.now() - data.timestamp > reactionTTL * 1000) return null;
     return data;
   } catch {
     return null;
@@ -286,6 +284,7 @@ export function resolveUserId(): string {
 
 export interface BuddyConfig {
   commentCooldown: number;
+  reactionTTL: number;
   bubbleStyle: "classic" | "round";
   bubblePosition: "top" | "left";
   showRarity: boolean;
@@ -294,6 +293,7 @@ export interface BuddyConfig {
 
 const DEFAULT_CONFIG: BuddyConfig = {
   commentCooldown: 30,
+  reactionTTL: 0,
   bubbleStyle: "classic",
   bubblePosition: "top",
   showRarity: true,

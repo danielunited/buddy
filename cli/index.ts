@@ -43,6 +43,9 @@ switch (command) {
   case "backup":
     await import("./backup.ts");
     break;
+  case "settings":
+    await import("./settings.ts");
+    break;
   case "disable":
     await import("./disable.ts");
     break;
@@ -75,6 +78,11 @@ Buddy:
   pick              Interactive two-pane buddy picker (browse saved + search)
   hunt              Search for a specific buddy (non-interactive)
   verify            Verify what buddy your current ID produces
+
+Settings:
+  settings          Show current settings
+  settings cooldown <n>  Set comment cooldown (0-300 seconds)
+  settings ttl <n>       Set reaction display duration (0-300s, 0 = permanent)
 
 Diagnostics:
   doctor            Run diagnostic report (paste output in bug reports)

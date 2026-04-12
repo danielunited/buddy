@@ -40,8 +40,10 @@ import {
   deleteCompanionSlot,
   listCompanionSlots,
 } from "./state.ts";
-import { getReaction, generatePersonalityPrompt } from "./reactions.ts";
-import { renderCompanionCard } from "./art.ts";
+import {
+  getReaction, generatePersonalityPrompt,
+} from "./reactions.ts";
+import { renderCompanionCardMarkdown } from "./art.ts";
 
 function getInstructions(): string {
   const companion = loadCompanion();
@@ -121,7 +123,10 @@ server.tool(
     const reactionText =
       reaction?.reaction ?? `*${companion.name} watches your code quietly*`;
 
-    const card = renderCompanionCard(
+    // Use markdown rendering for the MCP tool response — Claude Code's UI
+    // doesn't render raw ANSI escape codes, so we return pure markdown with
+    // unicode rarity dots instead of RGB-colored borders.
+    const card = renderCompanionCardMarkdown(
       companion.bones,
       companion.name,
       companion.personality,
@@ -168,8 +173,9 @@ server.tool(
   async () => {
     const companion = ensureCompanion();
 
-    // Stats-only card (no personality, no reaction — just the numbers)
-    const card = renderCompanionCard(
+    // Stats-only card (no personality, no reaction — just the numbers).
+    // Uses markdown renderer so the card displays cleanly in Claude Code's UI.
+    const card = renderCompanionCardMarkdown(
       companion.bones,
       companion.name,
       "", // no personality in stats view
@@ -312,15 +318,7 @@ server.tool(
   "buddy_frequency",
   "Configure how often buddy comments appear in the speech bubble. Returns current settings if called without arguments.",
   {
-    cooldown: z
-      .number()
-      .int()
-      .min(5)
-      .max(300)
-      .optional()
-      .describe(
-        "Minimum seconds between displayed comments (default 30). The buddy always writes comments, but the display only updates this often.",
-      ),
+    cooldown: z.number().int().min(0).max(300).optional().describe("Minimum seconds between displayed comments (default 30, 0 = no throttling). The buddy always writes comments, but the display only updates this often."),
   },
   async ({ cooldown }) => {
     if (cooldown === undefined) {
@@ -566,7 +564,8 @@ server.tool(
     saveActiveSlot(targetSlot);
     writeStatusState(companion, `*${companion.name} arrives*`);
 
-    const card = renderCompanionCard(
+    // Uses markdown renderer so the card displays cleanly in Claude Code's UI.
+    const card = renderCompanionCardMarkdown(
       companion.bones,
       companion.name,
       companion.personality,
@@ -688,7 +687,7 @@ server.tool(
 server.resource(
   "buddy_companion",
   "buddy://companion",
-  "Current companion data as JSON",
+  { description: "Current companion data as JSON", mimeType: "application/json" },
   async () => {
     const companion = ensureCompanion();
     return {
@@ -708,7 +707,7 @@ server.resource(
 server.resource(
   "buddy_prompt",
   "buddy://prompt",
-  "System prompt context for the companion",
+  { description: "System prompt context for the companion", mimeType: "text/markdown" },
   async () => {
     const companion = ensureCompanion();
     const prompt = [

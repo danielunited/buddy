@@ -5,6 +5,9 @@
 
 STATE_DIR="$HOME/.claude-buddy"
 STATUS_FILE="$STATE_DIR/status.json"
+# Session ID: sanitized tmux pane number, or "default" outside tmux
+SID="${TMUX_PANE#%}"
+SID="${SID:-default}"
 
 [ -f "$STATUS_FILE" ] || exit 0
 
@@ -86,6 +89,70 @@ case "$SPECIES" in
       "*oozes toward you*"
       "*wobbles excitedly*"
     ) ;;
+  turtle)
+    REACTIONS=(
+      "*slowly extends neck*"
+      "...you called?"
+      "*ancient eyes open*"
+      "*shell creaks thoughtfully*"
+      "*blinks once, patiently*"
+    ) ;;
+  goose)
+    REACTIONS=(
+      "HONK."
+      "*necks aggressively*"
+      "*wing flap*"
+      "*honks in recognition*"
+    ) ;;
+  octopus)
+    REACTIONS=(
+      "*eight eyes open*"
+      "*curls an arm toward you*"
+      "*changes color curiously*"
+      "...yes, friend?"
+    ) ;;
+  penguin)
+    REACTIONS=(
+      "*adjusts tie*"
+      "*dignified waddle*"
+      "*bows slightly*"
+      "...yes, quite?"
+    ) ;;
+  snail)
+    REACTIONS=(
+      "*slow head extension*"
+      "...mmm?"
+      "*trails slowly toward you*"
+      "*antenna twitches*"
+    ) ;;
+  cactus)
+    REACTIONS=(
+      "*stands silent*"
+      "...hm."
+      "*spine twitches*"
+      "*slowly rotates*"
+    ) ;;
+  rabbit)
+    REACTIONS=(
+      "*ears perk up*"
+      "*nose twitches*"
+      "yes?"
+      "*hops closer*"
+    ) ;;
+  mushroom)
+    REACTIONS=(
+      "*releases a tiny spore*"
+      "*cap tilts*"
+      "*stands mysterious*"
+      "...yes?"
+    ) ;;
+  chonk)
+    REACTIONS=(
+      "*barely opens one eye*"
+      "...mrrp?"
+      "*yawns heavily*"
+      "*rolls over toward you*"
+    ) ;;
   *)
     REACTIONS=(
       "*perks up*"
@@ -102,8 +169,8 @@ mkdir -p "$STATE_DIR"
 TMP=$(mktemp)
 jq --arg r "$REACTION" '.reaction = $r' "$STATUS_FILE" > "$TMP" 2>/dev/null && mv "$TMP" "$STATUS_FILE"
 
-cat > "$STATE_DIR/reaction.json" <<EOJSON
-{"reaction":"$REACTION","timestamp":$(date +%s%3N),"reason":"name"}
-EOJSON
+jq -n --arg r "$REACTION" --arg ts "$(date +%s)000" \
+  '{reaction: $r, timestamp: ($ts | tonumber), reason: "name"}' \
+  > "$STATE_DIR/reaction.$SID.json"
 
 exit 0
