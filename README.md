@@ -8,7 +8,7 @@
 
 # Claude Code Buddy
 
-### Your Claude Code buddy — permanently. Survives every update.
+### A warm coding mentor in your Claude Code terminal — learn as you ship.
 
 <!-- ============================================================ -->
 <!-- BADGES                                                        -->
@@ -31,7 +31,7 @@
 
 <br><br>
 
-> **Anthropic removed `/buddy` in Claude Code v2.1.97.** This brings it back — *forever*. Same species, same stats, same personality. Now powered by MCP, so no update can ever take it away again.
+> **A fork of [1270011/claude-buddy](https://github.com/1270011/claude-buddy) with a different job.** The upstream buddy vibes and jokes. This one watches what Claude ships and teaches one thing worth learning — a pattern, an antipattern, a subtle choice — in character, at the end of the turn. Built for vibe coders who want to actually understand the code they're shipping.
 
 <br>
 
@@ -52,9 +52,9 @@
 <sub>From ducks to dragons — each with animated ASCII art and rarity colors.</sub>
 </td>
 <td align="center" width="25%">
-<h3>💬</h3>
-<b>Speech Bubbles</b><br>
-<sub>Your buddy comments on your code in real time. Invisible, contextual, alive.</sub>
+<h3>🧠</h3>
+<b>Teaches as you code</b><br>
+<sub>Names the pattern Claude just used — or the antipattern — so you actually learn what shipped.</sub>
 </td>
 <td align="center" width="25%">
 <h3>⚡</h3>
@@ -191,7 +191,7 @@ Five integration points, zero binary dependencies. When Claude Code updates, you
              └─────────────────────┘
 ```
 
-- **MCP Server** — companion tools + system prompt that instructs Claude to write buddy comments
+- **MCP Server** — companion tools + mentor-shaped instructions, so Claude's buddy comments name patterns and antipatterns from what just shipped
 - **Skill** — routes `/buddy`, `/buddy pet`, `/buddy stats`, `/buddy off`, `/buddy rename`
 - **Status Line** — animated ASCII art, right-aligned, with rarity color and speech bubble
 - **PostToolUse Hook** — detects errors, test failures, large diffs in Bash output
@@ -217,6 +217,22 @@ claude-buddy/
 ├── statusline/      # Animated right-aligned buddy display
 └── cli/             # install, show, hunt, verify, doctor, backup, uninstall
 ```
+
+</details>
+
+---
+
+<details>
+<summary><b>🎓 &nbsp; How Buddy Teaches</b></summary>
+
+<br>
+
+Most turns, buddy just vibes in character. When Claude ships something worth naming — a pattern, an antipattern, a subtle choice — buddy drops a one-sentence comment so the word sticks. Silence beats filler: trivial diffs don't get forced lessons.
+
+The default personality is a *warm, wise coding mentor for vibe coders*. Two things to customize:
+
+- **Tone** — `/buddy personality "..."` sets any voice you want (strict linter, Zen master, rubber duck, whatever).
+- **What to catch** — an optional reference of concrete antipatterns lives at [`skills/buddy/red-flags.md`](skills/buddy/red-flags.md): silent failures, foot-guns, security issues, naming, over/under-engineering. Edit it to retune the mentor's focus. For per-project overrides, drop your own `red-flags.md` in the project and point to it from `CLAUDE.md`.
 
 </details>
 
