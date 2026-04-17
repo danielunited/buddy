@@ -243,7 +243,7 @@ function previewPane(s: State): string[] {
     const r = s.pendingResult;
     c = {
       bones: r.bones, name: s.nameInput || "???",
-      personality: `A ${r.bones.rarity} ${r.bones.species} who watches code with quiet intensity.`,
+      personality: `A ${r.bones.rarity} ${r.bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
       hatchedAt: Date.now(), userId: r.userId,
     };
   }
@@ -367,7 +367,7 @@ function onKey(key: string, s: State): boolean {
         const r    = s.pendingResult!;
         const companion: Companion = {
           bones: r.bones, name,
-          personality: `A ${r.bones.rarity} ${r.bones.species} who watches code with quiet intensity.`,
+          personality: `A ${r.bones.rarity} ${r.bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
           hatchedAt: Date.now(), userId: r.userId,
         };
         saveCompanionSlot(companion, slot);

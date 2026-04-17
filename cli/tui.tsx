@@ -1883,7 +1883,7 @@ function App() {
           const companion: Companion = {
             bones: chosen.bones,
             name,
-            personality: `A ${chosen.bones.rarity} ${chosen.bones.species} who watches code with quiet intensity.`,
+            personality: `A ${chosen.bones.rarity} ${chosen.bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
             hatchedAt: Date.now(),
             userId: chosen.userId,
           };

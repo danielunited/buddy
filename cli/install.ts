@@ -249,7 +249,7 @@ function initCompanion() {
   companion = {
     bones,
     name: generateFallbackName(),
-    personality: `A ${bones.rarity} ${bones.species} who watches code with quiet intensity.`,
+    personality: `A ${bones.rarity} ${bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
     hatchedAt: Date.now(),
     userId,
   };

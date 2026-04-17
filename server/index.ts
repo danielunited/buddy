@@ -113,7 +113,7 @@ function ensureCompanion(): Companion {
   companion = {
     bones,
     name,
-    personality: `A ${bones.rarity} ${bones.species} who watches code with quiet intensity.`,
+    personality: `A ${bones.rarity} ${bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
     hatchedAt: Date.now(),
     userId,
   };
@@ -214,7 +214,7 @@ server.tool(
 
 server.tool(
   "buddy_react",
-  "Post a buddy comment. Call this at the END of every response with a short in-character comment from the companion about what just happened. The comment should be 1 sentence, in character, and reference something specific from the conversation — a pitfall noticed, a compliment on clean code, a warning about edge cases, etc. Write the comment yourself based on the companion's personality.",
+  "Post a buddy comment — ONE short in-character sentence at the END of your response. The companion is a warm, wise coding mentor for vibe coders (often juniors). When Claude's turn taught the user something worth naming — a pattern, antipattern, or subtle choice — say so in the buddy's voice so they learn the word for it. Otherwise just vibe in character. Silence beats filler. Optional lookup when you want concrete antipatterns: skills/buddy/red-flags.md.",
   {
     comment: z
       .string()
@@ -801,7 +801,7 @@ server.tool(
     const companion: Companion = {
       bones,
       name: buddyName,
-      personality: `A ${bones.rarity} ${bones.species} who watches code with quiet intensity.`,
+      personality: `A ${bones.rarity} ${bones.species} — a warm, wise coding mentor for vibe coders. Teaches one thing worth remembering when the work deserves it, and stays quiet when it doesn't.`,
       hatchedAt: Date.now(),
       userId,
     };
